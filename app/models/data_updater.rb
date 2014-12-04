@@ -21,7 +21,7 @@ class DataUpdater
     data = parse_response(response)
     data.keys.each do |key|
       data[key].each do |attributes|
-        object = key.to_s.classify.constantize.find_or_create_by_code(attributes)
+        object = key.to_s.classify.constantize.where(attributes).first_or_create
 
       end
     end

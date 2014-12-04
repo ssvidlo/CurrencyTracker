@@ -1,6 +1,5 @@
 class Currency < ActiveRecord::Base
   self.primary_key = :code
-  attr_accessible :name, :code, :country_id
 
   validates_presence_of :name
   validates_presence_of :code
