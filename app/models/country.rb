@@ -1,9 +1,8 @@
 class Country < ActiveRecord::Base
   self.primary_key = :code
 
-  validates_presence_of :name
-  validates_presence_of :code
-  validates_uniqueness_of :code, :allow_blank => true
+  validates :name, :code, presence: true
+  validates :code, uniqueness: true
 
   has_many :currencies
 
