@@ -2,10 +2,8 @@ ruby '2.1.2'
 
 source 'http://rubygems.org'
 
-gem 'rails', '4.1.7.1'
+gem 'rails', '4.1.8'
 gem 'sqlite3'
-gem 'savon', '~>1.0'
-gem 'nokogiri'
 
 group :development do
   gem 'capybara'
