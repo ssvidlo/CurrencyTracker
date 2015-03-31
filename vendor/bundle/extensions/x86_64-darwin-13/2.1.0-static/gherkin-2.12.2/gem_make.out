@@ -1,0 +1,13 @@
+/Users/jluckett/.rbenv/versions/2.1.2/bin/ruby extconf.rb 
+checking for main() in -lc... yes
+creating Makefile
+
+make "DESTDIR=" clean
+
+make "DESTDIR="
+compiling gherkin_lexer_zh_tw.c
+linking shared-object gherkin_lexer_zh_tw.bundle
+
+make "DESTDIR=" install
+/usr/bin/install -c -m 0755 gherkin_lexer_zh_tw.bundle ./.gem.20141204-64963-hs5jro
+installing default gherkin_lexer_zh_tw libraries

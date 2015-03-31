@@ -29,7 +29,7 @@ class CountriesController < ApplicationController
   # POST /countries
   # POST /countries.xml
   def create
-    @country = Country.new(params[:country])
+    @country = Country.new(params[:country].permit(:visited,:name,:code))
 
     respond_to do |format|
       if @country.save
@@ -48,7 +48,7 @@ class CountriesController < ApplicationController
     @country = Country.find(params[:id])
 
     respond_to do |format|
-      if @country.update_attributes(params[:country])
+      if @country.update_attributes(params[:country].permit(:visited,:name,:code))
         format.html { redirect_to(@country, :notice => 'Country was successfully updated.') }
         format.xml  { head :ok }
       else
