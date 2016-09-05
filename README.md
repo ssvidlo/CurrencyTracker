@@ -39,3 +39,4 @@ Features
 * Track Visited Countries
 * Track Collected Currencies
 * Charts show you how far along you are!
+# CurrencyTracker
