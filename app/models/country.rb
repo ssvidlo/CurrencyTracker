@@ -12,6 +12,10 @@ class Country < ActiveRecord::Base
   scope :visited, -> (user) { joins(:country_users).where(country_users: { user_id: user.id, visited: true}) }
   scope :not_visited, -> (user) { joins(:country_users).where(country_users: { user_id: user.id, visited: false}) }
 
+  searchable do
+    text :name, :code
+  end
+
   def visited? user
     CountryUser.find_by(user: user, country: self).visited
   end

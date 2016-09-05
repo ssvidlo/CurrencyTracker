@@ -6,6 +6,10 @@ class Currency < ActiveRecord::Base
 
   belongs_to :country
 
+  searchable do
+    text :name, :code
+  end
+
   def self.collected user
     all.select {|currency| currency.collected?(user) }
   end

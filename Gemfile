@@ -5,6 +5,10 @@ source 'http://rubygems.org'
 gem 'rails', '4.1.8'
 gem 'sqlite3'
 gem 'devise'
+gem 'kaminari'
+gem 'sunspot_rails'
+gem 'sunspot_solr'
+gem 'progress_bar'
 
 group :development do
   gem 'capybara'
