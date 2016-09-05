@@ -1,4 +1,6 @@
 class CurrenciesController < ApplicationController
+  before_action :authenticate_user!
+
   # GET /currencies
   # GET /currencies.xml
   def index

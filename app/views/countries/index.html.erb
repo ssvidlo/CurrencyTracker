@@ -3,10 +3,10 @@
     <table>
       <tr>
         <th>Visited</th>
-        <td><%= Country.visited.count %></td>
+        <td><%= Country.visited(current_user).count %></td>
       </tr><tr>
         <th>Not Visited</th>
-        <td><%= Country.not_visited.count %></td>
+        <td><%= Country.not_visited(current_user).count %></td>
       </tr>
     </table>
   </div>
@@ -26,7 +26,7 @@
     <tr>
       <td><%= country.name %></td>
       <td><%= country.code %></td>
-      <td><%= country.visited? ? 'Visited' : 'Not Visited' %></td>
+      <td><%= country.visited?(current_user) ? 'Visited' : 'Not Visited' %></td>
       <td><%= link_to 'Show', country %></td>
       <td><%= link_to 'Edit', edit_country_path(country) %></td>
     </tr>

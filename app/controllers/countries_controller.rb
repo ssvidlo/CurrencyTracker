@@ -1,4 +1,6 @@
 class CountriesController < ApplicationController
+  before_action :authenticate_user!
+
   # GET /countries
   # GET /countries.xml
   def index
@@ -24,6 +26,7 @@ class CountriesController < ApplicationController
   # GET /countries/1/edit
   def edit
     @country = Country.find(params[:id])
+    @country_user = CountryUser.find_by(user: current_user, country: @country)
   end
 
   # POST /countries
@@ -49,6 +52,8 @@ class CountriesController < ApplicationController
 
     respond_to do |format|
       if @country.update_attributes(params[:country].permit(:visited,:name,:code))
+        country_user = CountryUser.find_by(user: current_user, country: @country)
+        country_user.update_attributes(visited: params[:visited])
         format.html { redirect_to(@country, :notice => 'Country was successfully updated.') }
         format.xml  { head :ok }
       else

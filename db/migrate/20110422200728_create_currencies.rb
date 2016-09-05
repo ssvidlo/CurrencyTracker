@@ -2,10 +2,9 @@ class CreateCurrencies < ActiveRecord::Migration
   def self.up
     create_table :currencies, :id => false do |t|
       t.string :name
-      t.string :code
+      t.string :code, primary_key: true
 
       t.timestamps
-      t.primary_key :code
     end
   end
 

@@ -21,7 +21,7 @@
   </div>
   <div class="field">
     <%= f.label :visited %><br />
-    <%= f.check_box :visited %>
+    <%= check_box_tag :visited, @country_user.visited %>
   </div>
   <div class="actions">
     <%= f.submit %>

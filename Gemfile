@@ -4,6 +4,7 @@ source 'http://rubygems.org'
 
 gem 'rails', '4.1.8'
 gem 'sqlite3'
+gem 'devise'
 
 group :development do
   gem 'capybara'
