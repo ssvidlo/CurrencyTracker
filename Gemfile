@@ -8,15 +8,24 @@ gem 'devise'
 gem 'kaminari'
 gem 'sunspot_rails'
 gem 'sunspot_solr'
+gem 'sunspot_test'
 gem 'progress_bar'
 
 group :development do
   gem 'capybara'
   gem 'database_cleaner'
+  gem 'pry'
 end
 
 group :test do
   gem 'cucumber-rails', :require => false
+  gem 'sunspot_matchers'
+end
+
+group :development, :test do
+  gem 'rspec-rails'
+  gem 'factory_girl_rails'
+  gem 'faker'
 end
 
 group :assets do

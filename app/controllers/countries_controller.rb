@@ -4,73 +4,60 @@ class CountriesController < ApplicationController
     @search = Country.search do
       fulltext params[:search]
 
-      paginate :page => params[:page],  :per_page => 15
+      paginate page: params[:page],  per_page: 15
     end
 
     @countries = @search.results
-
-    respond_to do |format|
-      format.json  { render :json => { :result => @countries, :page => params[:page] }}
-    end
+    render json: { result: @countries }
   end
 
   def show
     @country = Country.find(params[:id])
 
-    respond_to do |format|
-      format.json  { render :json => { :result => @country  } }
-    end
+    render json: { result: @country }
   end
 
   def status
     @status = Country.find(params[:id]).visited?(current_user)
 
-    respond_to do |format|
-      format.json  { render :json => { :visited => @status } }
-    end
+    render json: { visited: @status }
   end
 
   def stats
     @visited = Country.visited(current_user).count
-    @visited_unvisited = @visits/Country.not_visited(current_user).count.to_f
+    @visited_unvisited = @visited/Country.not_visited(current_user).count.to_f
 
-    respond_to do |format|
-      format.json  { render :json => { :visited => @visited, :visited_unvisited => @visited_unvisited }}
-    end
+    render json:  { visited: @visited, visited_unvisited: @visited_unvisited }
   end
 
   def edit
     @country = Country.find(params[:id])
     @country_user = CountryUser.find_by(user: current_user, country: @country)
 
-    respond_to do |format|
-      format.json  { render :json => { :country_user => @country_user, :country => @country } }
-    end
+    render json: { country_user: @country_user, country: @country }
   end
 
   def create
-    @country = Country.new(params[:country].permit(:visited,:name,:code))
+    @country = Country.new(params[:country].permit(:name,:code))
 
-    respond_to do |format|
-      if @country.save
-        format.json  { render :json => { :result => @country, :status => :created, :location => @country } }
-      else
-        format.json  { render :json => { :result => @country.errors, :status => :unprocessable_entity } }
-      end
+    if @country.save
+      country_user = CountryUser.find_or_create_by(user: current_user, country: @country)
+      country_user.update_attributes(visited: params[:visited])
+      render json: { result: @country, status: :created, location: @country }
+    else
+      render json: { result: @country.errors, status: :unprocessable_entity }
     end
   end
 
   def update
     @country = Country.find(params[:id])
 
-    respond_to do |format|
-      if @country.update_attributes(params[:country].permit(:name,:code))
-        country_user = CountryUser.find_by(user: current_user, country: @country)
-        country_user.update_attributes(visited: params[:visited])
-        format.json  { head :ok }
-      else
-        format.json  { render :xml => { :result => @country.errors, :status => :unprocessable_entity } }
-      end
+    if @country.update_attributes(params[:country].permit(:name,:code))
+      country_user = CountryUser.find_by(user: current_user, country: @country)
+      country_user.update_attributes(visited: params[:visited])
+      render json: { result: @country, status: :updated, location: @country }
+    else
+      render json: { result: @country.errors, status: :unprocessable_entity }
     end
   end
 end
