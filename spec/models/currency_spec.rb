@@ -32,7 +32,7 @@ describe User, type: :model do
 
     describe '.collected' do
 
-  	  before do
+      before do
         country_user1.update_attributes(visited: true)
         country_user2.update_attributes(visited: true)
         country_user3.update_attributes(visited: true)

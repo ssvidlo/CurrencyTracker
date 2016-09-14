@@ -30,4 +30,36 @@ class CurrenciesController < ApplicationController
 
     render json: { collected: @collected, collected_uncollected: @collected_uncollected }
   end
+
+  def maximize_collections_counter
+    capacity = params[:capacity].to_i
+    selected_currencies = list_selected_currencies capacity, current_user
+
+
+    @selected_countries = selected_currencies
+      .map(&:country)
+      .map(&:name)
+      .each_with_object(Hash.new 0) { |word, counter| counter[word] += 1 }
+
+    @sum_selected_currencies = selected_currencies.map(&:weight).sum
+
+    render json: { selected_countries: @selected_countries, sum_selected_currencies: @sum_selected_currencies }
+  end
+
+  def list_selected_currencies capacity, user
+    currencies_sorted_value = Currency.not_collected(user).sort_by { |currency| currency[:collector_value] }.reverse
+    currencies_sorted_weight = Currency.not_collected(user).sort_by { |currency| currency[:weight] }.reverse
+    selected_currencies = []
+    i = 0
+
+    while capacity >= currencies_sorted_weight.last[:weight]
+      if currencies_sorted_value[i][:weight] <= capacity
+        selected_currencies << currencies_sorted_value[i]
+        capacity -= currencies_sorted_value[i][:weight]
+      else
+        i += 1
+      end
+    end
+    selected_currencies
+  end
 end
