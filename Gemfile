@@ -10,6 +10,7 @@ gem 'sunspot_rails'
 gem 'sunspot_solr'
 gem 'sunspot_test'
 gem 'progress_bar'
+gem 'simple_token_authentication'
 
 group :development do
   gem 'capybara'

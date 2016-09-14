@@ -1,10 +1,13 @@
 describe CurrenciesController, type: :controller do
-  let!(:country) { FactoryGirl.create :country }
-  let!(:currency) { FactoryGirl.create(:currency, country: country) }
-  let!(:user) { FactoryGirl.create :user }
-  let!(:country_user) { CountryUser.find_by(user: user, country: country) }
+  let!(:country)      { FactoryGirl.create :country }
+  let!(:currency)     { FactoryGirl.create :currency, country: country }
+  let!(:user)         { FactoryGirl.create :user }
+  let!(:country_user) { CountryUser.find_by user: user, country: country }
 
-  before { controller.stub(:current_user) { user } }
+  before do
+    controller.request.headers['email'] = user.email
+    controller.request.headers['auth_token'] = user.authentication_token
+  end
 
   subject { decoded_json_response }
 
@@ -55,11 +58,11 @@ describe CurrenciesController, type: :controller do
 
     before { dispatch }
 
-    it { expect(subject['result']['name']).to eq(currency.name) }
-    it { expect(subject['result']['code']).to eq(currency.code) }
-    it { expect(subject['result']['weight']).to eq(currency.weight.to_s) }
+    it { expect(subject['result']['name']).to            eq(currency.name) }
+    it { expect(subject['result']['code']).to            eq(currency.code) }
+    it { expect(subject['result']['weight']).to          eq(currency.weight.to_s) }
     it { expect(subject['result']['collector_value']).to eq(currency.collector_value.to_s) }
-    it { expect(subject['result']['country_id']).to eq(country.code) }
+    it { expect(subject['result']['country_id']).to      eq(country.code) }
   end
 
   describe 'POST /countries/status/:id' do
@@ -87,51 +90,16 @@ describe CurrenciesController, type: :controller do
   end
 
   describe 'POST /currencies/stats' do
-    let!(:country1)      { FactoryGirl.create(:country, name: 'Albania', code: 'al') }
-    let!(:country2)      { FactoryGirl.create(:country, name: 'Algeria', code: 'dz') }
-    let!(:country3)      { FactoryGirl.create(:country, name: 'American Samoa', code: 'as') }
-    let!(:country4)      { FactoryGirl.create(:country, name: 'Argentina', code: 'ar') }
-    let!(:country5)      { FactoryGirl.create(:country, name: 'Angola', code: 'ao') }
-    let! :currency1 do
-      FactoryGirl.create :currency,
-        country: country1,
-        name: 'Afghani',
-        code: 'AFA',
-        weight: "3.59144658850593",
-        collector_value: "7.820516121919"
-    end
-    let! :currency2 do
-      FactoryGirl.create :currency,
-        name: 'Lek',
-        code: 'ALL',
-        weight: '2.74041828894157',
-        collector_value: '1.74565844472991',
-        country: country2
-    end
-    let! :currency3 do
-      FactoryGirl.create :currency,
-        name: 'Dinar',
-        code: 'DZD',
-        weight: '4.02363006175925',
-        collector_value: '1.80104808337808',
-      	country: country3
-    end
-    let! :currency4 do
-      FactoryGirl.create :currency,
-      name: 'Birr',
-      code: 'ETB',
-      weight: '2.41315872644931',
-      collector_value: '8.96192605938152',
-      country: country4
-    end
-    let! :currency5 do
-      FactoryGirl.create :currency,
-      name: 'New Kwanza',
-      code: 'AON',
-      weight: '3.58570369163788',
-      collector_value: '7.81741384733311',
-      country: country5
-    end
+    let!(:country1)      { FactoryGirl.create :country }
+    let!(:country2)      { FactoryGirl.create :country }
+    let!(:country3)      { FactoryGirl.create :country }
+    let!(:country4)      { FactoryGirl.create :country }
+    let!(:country5)      { FactoryGirl.create :country }
+    let!(:currency1)     { FactoryGirl.create :currency, country: country1 }
+    let!(:currency2)     { FactoryGirl.create :currency, country: country2 }
+    let!(:currency3)     { FactoryGirl.create :currency, country: country3 }
+    let!(:currency4)     { FactoryGirl.create :currency, country: country4 }
+    let!(:currency5)     { FactoryGirl.create :currency, country: country5 }
     let!(:country_user1) { FactoryGirl.create(:country_user, country: country1, user: user, visited: true) }
     let!(:country_user2) { FactoryGirl.create(:country_user, country: country2, user: user, visited: true) }
     let!(:country_user3) { FactoryGirl.create(:country_user, country: country3, user: user, visited: true) }

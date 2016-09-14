@@ -54,10 +54,12 @@ RSpec.configure do |config|
   # triggering implicit auto-inclusion in groups with matching metadata.
   config.shared_context_metadata_behavior = :apply_to_host_groups
 
-  config.before :each, search: true do
-    SunspotTest.solr_startup_timeout = 30
-    SunspotTest.setup_solr
-    Sunspot.remove_all!
+  config.before(:each) do
+    ::Sunspot.session = ::Sunspot::Rails::StubSessionProxy.new(::Sunspot.session)
+  end
+
+  config.after(:each) do
+    ::Sunspot.session = ::Sunspot.session.original_session
   end
 
   config.include Devise::Test::ControllerHelpers, type: :controller

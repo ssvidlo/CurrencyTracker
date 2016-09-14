@@ -1,9 +1,12 @@
 describe CountriesController, type: :controller do
-  let!(:country) { FactoryGirl.create :country }
-  let!(:user) { FactoryGirl.create :user }
+  let!(:country)      { FactoryGirl.create :country }
+  let!(:user)         { FactoryGirl.create :user }
   let!(:country_user) { CountryUser.find_by(user: user, country: country) }
 
-  before { controller.stub(:current_user) { user } }
+  before do
+    controller.request.headers['email'] = user.email
+    controller.request.headers['auth_token'] = user.authentication_token
+  end
 
   subject { decoded_json_response }
 
@@ -48,6 +51,7 @@ describe CountriesController, type: :controller do
   end
 
   describe 'GET /countries/:id' do
+
     def dispatch
       get :show, id: country.id
     end
@@ -71,7 +75,7 @@ describe CountriesController, type: :controller do
       post :update, id: country.code, country: { name: country.name, code: country.code }, visited: true
     end
 
-    it { expect { dispatch }.to change { country_user.reload.visited } }
+    it { expect { dispatch }.to     change { country_user.reload.visited } }
     it { expect { dispatch }.not_to change { country.reload.code } }
     it { expect { dispatch }.not_to change { country.reload.name } }
   end
@@ -101,11 +105,11 @@ describe CountriesController, type: :controller do
   end
 
   describe 'POST /countries/stats' do
-    let!(:country1)      { FactoryGirl.create(:country, name: 'Albania', code: 'al') }
-    let!(:country2)      { FactoryGirl.create(:country, name: 'Algeria', code: 'dz') }
-    let!(:country3)      { FactoryGirl.create(:country, name: 'American Samoa', code: 'as') }
-    let!(:country4)      { FactoryGirl.create(:country, name: 'Argentina', code: 'ar') }
-    let!(:country5)      { FactoryGirl.create(:country, name: 'Angola', code: 'ao') }
+    let!(:country1)      { FactoryGirl.create :country }
+    let!(:country2)      { FactoryGirl.create :country }
+    let!(:country3)      { FactoryGirl.create :country }
+    let!(:country4)      { FactoryGirl.create :country }
+    let!(:country5)      { FactoryGirl.create :country }
     let!(:country_user1) { FactoryGirl.create(:country_user, country: country1, user: user, visited: true) }
     let!(:country_user2) { FactoryGirl.create(:country_user, country: country2, user: user, visited: true) }
     let!(:country_user3) { FactoryGirl.create(:country_user, country: country3, user: user, visited: true) }

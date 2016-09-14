@@ -1,7 +1,7 @@
 describe Country, type: :model do
-  let!(:country) { FactoryGirl.create :country }
-  let!(:user) { FactoryGirl.create :user }
-  let!(:country_user) { CountryUser.find_by(user: user, country: country) }
+  let!(:country)      { FactoryGirl.create :country }
+  let!(:user)         { FactoryGirl.create :user }
+  let!(:country_user) { CountryUser.find_by user: user, country: country }
 
   describe 'visited?' do
     context 'when visited contry' do
