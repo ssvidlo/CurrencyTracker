@@ -12,7 +12,7 @@ describe CurrenciesController, type: :controller do
   subject { decoded_json_response }
 
   describe 'GET /currencies', :search => true do
-  	def dispatch parameters = {}
+    def dispatch parameters = {}
       get :index, parameters
     end
 
@@ -65,7 +65,7 @@ describe CurrenciesController, type: :controller do
     it { expect(subject['result']['country_id']).to      eq(country.code) }
   end
 
-  describe 'POST /countries/status/:id' do
+  describe 'GET /currencies/status/:id' do
     def dispatch
       get :status, id: currency.code
     end
@@ -81,15 +81,15 @@ describe CurrenciesController, type: :controller do
 
     context 'when currencies not collected' do
       before do 
-      	country_user.update_attributes(visited: false)
-      	dispatch
+        country_user.update_attributes(visited: false)
+        dispatch
       end
 
       it { expect(subject['collected']).to eq false }
     end
   end
 
-  describe 'POST /currencies/stats' do
+  describe 'GET /currencies/stats' do
     let!(:country1)      { FactoryGirl.create :country }
     let!(:country2)      { FactoryGirl.create :country }
     let!(:country3)      { FactoryGirl.create :country }
@@ -111,12 +111,67 @@ describe CurrenciesController, type: :controller do
     end
 
     context 'when visited country' do
-      before do
-        dispatch
-      end
+      before { dispatch }
 
       it { expect(subject['collected']).to eq 4 }
       it { expect(subject['collected_uncollected']).to eq 2.0 }
+    end
+  end
+
+  describe 'GET /currencies/maximize_collections_counter' do
+    let!(:country1)      { FactoryGirl.create :country }
+    let!(:country2)      { FactoryGirl.create :country }
+    let!(:currency1)     { FactoryGirl.create :currency, country: country1, weight: '5', collector_value: '25' }
+    let!(:currency2)     { FactoryGirl.create :currency, country: country2, weight: '4', collector_value: '50' }
+    let!(:country_user1) { FactoryGirl.create(:country_user, country: country1, user: user, visited: false) }
+    let!(:country_user2) { FactoryGirl.create(:country_user, country: country2, user: user, visited: false) }
+
+    def dispatch
+      get :maximize_collections_counter, capacity: 9
+    end
+
+    before { dispatch }
+
+    it { expect(subject['selected_countries']).to include country2.name }
+    it { expect(subject['sum_selected_currencies'].to_i).to eq 8 }
+  end
+
+  describe '.list_selected_currencies' do
+    let!(:country1)      { FactoryGirl.create :country, name: 'A' }
+    let!(:country2)      { FactoryGirl.create :country, name: 'B' }
+    let!(:country3)      { FactoryGirl.create :country, name: 'C' }
+    let!(:country4)      { FactoryGirl.create :country, name: 'D' }
+    let!(:currency1)     { FactoryGirl.create :currency, country: country1, weight: '5', collector_value: '25' }
+    let!(:currency2)     { FactoryGirl.create :currency, country: country2, weight: '4', collector_value: '50' }
+    let!(:currency3)     { FactoryGirl.create :currency, country: country3, weight: '3', collector_value: '10' }
+    let!(:currency4)     { FactoryGirl.create :currency, country: country4, weight: '10', collector_value: '110' }
+    let!(:country_user1) { FactoryGirl.create(:country_user, country: country1, user: user, visited: false) }
+    let!(:country_user2) { FactoryGirl.create(:country_user, country: country2, user: user, visited: false) }
+    let!(:country_user3) { FactoryGirl.create(:country_user, country: country3, user: user, visited: false) }
+    let!(:country_user4) { FactoryGirl.create(:country_user, country: country4, user: user, visited: false) }
+
+    subject { controller.list_selected_currencies capacity, user }
+
+    context 'when capacity equal 16' do
+      let!(:capacity) { 16 }
+
+      it { is_expected.to include currency4 }
+      it { is_expected.to include currency2 }
+    end
+
+    context 'when capacity equal 10' do
+      let!(:capacity) { 10 }
+
+      it { is_expected.to include currency4 }
+    end
+
+    context 'when capacity equal 27' do
+      let!(:capacity) { 27 }
+
+      it { is_expected.to include currency4 }
+      it { is_expected.to include currency4 }
+      it { is_expected.to include currency2 }
+      it { is_expected.to include currency3 }
     end
   end
 end

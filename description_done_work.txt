@@ -1,0 +1,7 @@
+At first I faced with two problems: first I need to develop under Ruby 2.1.2 not Ruby 2.1.5, the second is that there is wrong  primary_key code definitions in the migrations file .
+
+In the first task for secure login I choose Devise gem as for me it's good and simple variant to authenticate user, also I added a Country User table related to tables Country and User and helping with information about visited and unvisited countries.
+
+In the second task I converted the app to API. I deleted all views and changed actions to API responses with all information in json format. Also I added new actions Stats and Status helping to get information about visited and unvisited countries and collected and uncollected currencies. Added Kaminari gem wich provides the pagination functions and Solr provides the seаrch functions. Simple Token Authentication gem extends Devise functions to implement authentication through API. Also I added a test framework rspec, Factory Girl and Facer gems which help to test an App. I see no reason to reorganize unit and cucumber tests because rspec cover all this logic
+
+In the third task I added a method that produces a calculation of the optimal organization of the weights of currencies. I use greedy algorithm wich is not the best way in all cases but it work much faster then running through all possible combinations.

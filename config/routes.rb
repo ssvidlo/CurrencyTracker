@@ -1,6 +1,7 @@
 CurrencyTracker::Application.routes.draw do
   devise_for :users
   root :to => "currencies#index"
+  get 'currencies/maximize_collections_counter' => 'currencies#maximize_collections_counter'
   
   resources :countries, except: [:new, :destroy] do
     get :status, on: :member
@@ -10,7 +11,7 @@ CurrencyTracker::Application.routes.draw do
   resources :currencies, only: [:index, :show] do
     get :status, on: :member
     get :stats, on: :collection
-    get :maximize_collections, on: :collection
+    get :maximize_collections_counter, on: :collection
   end
 
   # The priority is based upon order of creation:
